@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>AquaWorld Aquarium Shop</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #eefcff
+        }
+
+        header {
+            background: #0088cc;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px;
+            background: #00c6ff;
+            color: #fff
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px
+        }
+
+        .card,
+        .box {
+            background: #fff;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0002
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0
+        }
+
+        button {
+            background: #0088cc;
+            color: #fff;
+            border: 0
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🐠 AquaWorld</h1>
+        <nav><a href='#products'>Products</a><a href='#order'>Order</a><a href='#track'>Track</a></nav>
+    </header>
+    <section class='hero'>
+        <h2>Welcome to AquaWorld</h2>
+        <p>Fish, Water Plants & Live Fish Food</p>
+    </section>
+    <section id='products' class='grid'>
+        <div class='card'>
+            <h3>Gold Fish</h3>
+            <p>₹250</p>
+        </div>
+        <div class='card'>
+            <h3>Water Plants</h3>
+            <p>₹180</p>
+        </div>
+        <div class='card'>
+            <h3>Live Fish Food</h3>
+            <p>₹120</p>
+        </div>
+    </section>
+    <section id='order' class='box'>
+        <h2>Place Order</h2>
+        <form id='orderForm'>
+            <input id='name' placeholder='Name' required>
+            <input id='phone' placeholder='Phone' required>
+            <input id='email' type='email' placeholder='Email' required>
+            <input id='product' placeholder='Product' required>
+            <input id='quantity' type='number' placeholder='Quantity' required>
+            <button>Submit</button>
+        </form>
+        <p id='msg'></p>
+    </section>
+    <section id='track' class='box'>
+        <h2>Track Order</h2>
+        <form id='trackForm'>
+            <input id='orderId' placeholder='AQ12345' required>
+            <input id='trackEmail' type='email' placeholder='customer@gmail.com' required>
+            <button>Track</button>
+        </form>
+        <div id='trackResult'></div>
+    </section>
+    <script>
+
+
+        // ================================
+        // Aquarium Shop - Form Validation
+        // ================================
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const orderForm = document.getElementById("orderForm");
+            const message = document.getElementById("msg");
+
+            orderForm.addEventListener("submit", function (e) {
+
+                e.preventDefault();
+
+                // Get values
+                const name = document.getElementById("name").value.trim();
+                const phone = document.getElementById("phone").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const product = document.getElementById("product").value.trim();
+                const quantity = document.getElementById("quantity").value.trim();
+
+                // Regular Expressions
+                const nameRegex = /^[A-Za-z ]{3,40}$/;
+                const phoneRegex = /^[6-9][0-9]{9}$/;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                // Validation
+
+                if (name === "") {
+                    showMessage("Please enter your name.", "red");
+                    return;
+                }
+
+                if (!nameRegex.test(name)) {
+                    showMessage("Name should contain only letters.", "red");
+                    return;
+                }
+
+                if (!phoneRegex.test(phone)) {
+                    showMessage("Enter a valid 10-digit mobile number.", "red");
+                    return;
+                }
+
+                if (!emailRegex.test(email)) {
+                    showMessage("Enter a valid email address.", "red");
+                    return;
+                }
+
+                if (product === "") {
+                    showMessage("Please enter product name.", "red");
+                    return;
+                }
+
+                if (quantity === "") {
+                    showMessage("Please enter quantity.", "red");
+                    return;
+                }
+
+                if (quantity <= 0) {
+                    showMessage("Quantity must be greater than zero.", "red");
+                    return;
+                }
+
+                // Generate Order ID
+
+                const orderID = "AQ" + Math.floor(Math.random() * 900000 + 100000);
+
+                showMessage(
+                    "Order Submitted Successfully!<br><br>Your Order ID : <strong>" +
+                    orderID +
+                    "</strong>",
+                    "green"
+                );
+
+                // =====================================
+                // Google Sheets API (Apps Script)
+                // =====================================
+
+                /*
+                fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+        
+                    method: "POST",
+        
+                    body: JSON.stringify({
+        
+                        orderID: orderID,
+                        name: name,
+                        phone: phone,
+                        email: email,
+                        product: product,
+                        quantity: quantity
+        
+                    })
+        
+                })
+                .then(res => res.text())
+                .then(data => console.log(data))
+                .catch(err => console.log(err));
+                */
+
+                orderForm.reset();
+
+            });
+
+            function showMessage(text, color) {
+
+                message.innerHTML = text;
+                message.style.color = color;
+                message.style.fontWeight = "bold";
+                message.style.marginTop = "20px";
+
+            }
+
+        });
+
+
+    </script>
+</body>
+
+</html>
